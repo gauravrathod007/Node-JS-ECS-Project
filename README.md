@@ -17,7 +17,7 @@ Containerize a simple Node.js Express application following Docker best practice
    npm init -y
    npm install express
 
-//app.js
+app.js
 
 const express = require('express');
 const app = express();
