@@ -2,9 +2,9 @@
 
 This repository contains multiple DevOps practice tasks, covering containerization, infrastructure as code, and Linux system administration.
 
----
-
+--------------------------------------------------------------
 ## 🐳 Part 1: Containerize a Node.js Application using Docker
+--------------------------------------------------------------
 
 ### Objective
 Containerize a simple Node.js Express application following Docker best practices.
@@ -99,7 +99,9 @@ docker run -d -p 3000:3000 node-app
 curl http://localhost:3000
 # Output: Hello World from containerized Node.js!
 
-Part 2: Infrastructure as Code using Terraform (AWS ECS)
+---------------------------------------------------------------
+## 🐳 Part 2: Infrastructure as Code using Terraform (AWS ECS)
+---------------------------------------------------------------
 Objective
 
 Deploy the containerized Node.js app to AWS ECS (Fargate) using Terraform.
