@@ -9,13 +9,16 @@ This repository contains multiple DevOps practice tasks, covering containerizati
 ### Objective
 Containerize a simple Node.js Express application following Docker best practices.
 
+---
+
 ### Steps
 
-1. **Create a simple Node.js app**
-   ```bash
-   mkdir node-app && cd node-app
-   npm init -y
-   npm install express
+#### 1. Create a simple Node.js app
+
+```bash
+mkdir node-app && cd node-app
+npm init -y
+npm install express
 
 app.js
 
@@ -31,16 +34,7 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
 
-2. **Create .dockerignore**
-
-node_modules
-npm-debug.log
-.DS_Store
-.git
-.gitignore
-.env
-logs
-*.log
+2. Create .dockerignore
 node_modules
 npm-debug.log
 .DS_Store
@@ -50,8 +44,7 @@ npm-debug.log
 logs
 *.log
 
-3. **Dockerfile**
-
+3. Create Dockerfile
 # --- Stage 1: builder ---
 FROM node:20-alpine AS builder
 
@@ -62,7 +55,6 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Install only production dependencies in builder (optional)
-# We still use builder stage to run npm ci to produce node_modules
 RUN npm ci --production
 
 # Copy app source
@@ -70,6 +62,7 @@ COPY . .
 
 # If you have any build step (e.g. transpile), run it here
 # RUN npm run build
+
 
 # --- Stage 2: runtime ---
 FROM node:20-alpine AS runtime
@@ -98,20 +91,19 @@ USER appuser
 # Start the app
 CMD ["node", "app.js"]
 
-4. **Build and run locally**
-
+4. Build and run locally
 docker build -t node-app .
 docker run -d -p 3000:3000 node-app
 
-5. **Test**
-
+5. Test
 curl http://localhost:3000
-# Output: Hello World from Dockerized Node.js App!
+# Output: Hello World from containerized Node.js!
 
-## 🐳 **Part 2: Infrastructure as Code using Terraform (AWS ECS)**
+Part 2: Infrastructure as Code using Terraform (AWS ECS)
 Objective
 
 Deploy the containerized Node.js app to AWS ECS (Fargate) using Terraform.
+
 Main Components
 Networking: VPC, subnets, security groups
 ECS Cluster: AWS Fargate cluster
@@ -119,8 +111,7 @@ Task Definition: References Docker image from Amazon ECR
 Service: Runs tasks behind an Application Load Balancer
 IAM Roles: Task execution roles with least privileges
 
-**Terraform structure**
-
+Terraform Project Structure
 terraform/
 ├── main.tf
 ├── variables.tf
@@ -129,43 +120,43 @@ terraform/
 │   ├── vpc/
 │   ├── ecs/
 │   ├── alb/
-|   ├── iam/
+│   ├── iam/
+
 
 Each module should:
+
 Contain its own main.tf, variables.tf, and outputs.tf
 Use meaningful variable names
 Include documentation (README or comments)
 Follow least privilege IAM principles
 
-Example snippet (ECS Task Definition)
-
+Example Snippet (ECS Task Definition)
 container_definitions = jsonencode([
-    {
-      name      = "hello-node"
-      image     = var.container_image
-      essential = true
-      portMappings = [
-        {
-          containerPort = var.container_port
-          hostPort      = var.container_port
-          protocol      = "tcp"
-        }
-      ]
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          awslogs-group         = aws_cloudwatch_log_group.this.name
-          awslogs-region        = var.aws_region
-          awslogs-stream-prefix = "hello-node"
-        }
+  {
+    name      = "hello-node"
+    image     = var.container_image
+    essential = true
+    portMappings = [
+      {
+        containerPort = var.container_port
+        hostPort      = var.container_port
+        protocol      = "tcp"
+      }
+    ]
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        awslogs-group         = aws_cloudwatch_log_group.this.name
+        awslogs-region        = var.aws_region
+        awslogs-stream-prefix = "hello-node"
       }
     }
-  ])
+  }
+])
 
-  **Deployment Steps Summary**
+🚀 Deployment Steps Summary
 
 Push Docker image to Amazon ECR
 Use Terraform to provision ECS infrastructure
 Confirm ECS service is active and ALB target group is healthy
 Access your app via the ALB DNS name
-
